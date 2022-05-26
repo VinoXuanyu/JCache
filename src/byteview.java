@@ -1,6 +1,11 @@
 public class byteview {
+    byte[] bytes;
+
     public byte[] bytes() {
-        byte[] ret = new byte[]{};
-        return ret;
+        return bytes;
+    }
+
+    public byteview(byte[] bytes) {
+
     }
 }

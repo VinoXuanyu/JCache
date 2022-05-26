@@ -1,8 +1,17 @@
-import javax.print.attribute.HashPrintJobAttributeSet;
 import java.util.HashMap;
+
+interface IPeerPicker {
+    public IPeerGetter pickPeer(String key);
+}
+
+interface IPeerGetter {
+    public byteview get(String group, String key);
+}
 
 public class geecache {
     public String name;
+    public IPeerPicker peers;
+
     public static HashMap<String, geecache> groups = new HashMap<>();
 
     public static geecache getGroup(String groupName){
@@ -23,5 +32,28 @@ public class geecache {
         return null;
     };
 
+    public void registerPeers(IPeerPicker peerPicker) {
+        if (this.peers != null) {
+            System.out.println("Peers already registered");
+            return;
+        }
+        this.peers = peerPicker;
+    }
 
+    public byteview load(String key) {
+        if (this.peers != null) {
+            IPeerGetter getter = this.peers.pickPeer(key);
+            return this.getFromPeer(getter, key);
+        } else {
+            return this.getLocally(key);
+        }
+    }
+
+    public byteview getLocally(String key){
+        return null;
+    }
+
+    public byteview getFromPeer(IPeerGetter getter, String key) {
+        return getter.get(this.name, key);
+    }
 }
