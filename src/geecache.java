@@ -1,12 +1,6 @@
 import java.util.HashMap;
 
-interface IPeerPicker {
-    public IPeerGetter pickPeer(String key);
-}
 
-interface IPeerGetter {
-    public byteview get(String group, String key);
-}
 
 public class geecache {
     public String name;
