@@ -2,4 +2,7 @@
 
 
 ## Architecture 
-![img.png](img.png)
+![img.png](arch.png)
+
+## Division of Labor
+![img_1.png](labor.png)
