@@ -63,9 +63,13 @@ public class geecache {
         }
     }
 
+
+    // TODO: Lishengze 调用getter.get 从数据源获取数据
     public byteview getLocally(String key){
         return null;
     }
+
+    // TODO: Lishengze populateCache 将数据添加到mainCache中
 
     public byteview getFromPeer(IPeerGetter getter, String key) {
         System.out.println("getFromPeer: "+getter.toString()+"  "+this.name);
