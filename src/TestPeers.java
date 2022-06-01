@@ -24,7 +24,7 @@ public class TestPeers {
         geecache.mainCache.put(String.format("%s%d", port, 5), Integer.toString(port));
         geecache.mainCache.put(String.format("%s%d", port, 6), Integer.toString(port));
         gee.registerPeers(peers);
-        System.out.println("geecache is running at"+addr);
+        System.out.println("structure.geecache is running at"+addr);
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext("/_jcache", peers);

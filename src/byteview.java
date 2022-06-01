@@ -1,5 +1,6 @@
 import java.nio.charset.StandardCharsets;
 
+
 public class byteview {
     byte[] bytes;
 
