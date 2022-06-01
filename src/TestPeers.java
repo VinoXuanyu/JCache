@@ -36,10 +36,13 @@ public class TestPeers {
             e.printStackTrace();
         }
     }
+
     public void startAPIServer(String apiAddr, geecache gee){
         try {
+            // TODO: tangbo
             HttpServer server4 = HttpServer.create(new InetSocketAddress(9999), 0);
             server4.createContext("/api",new APIhttp("localhost:9999"));
+            server4.createContext("/api/nodes",new APIhttp("localhost:9999"));
             server4.setExecutor(null);
             server4.start();
             System.out.println("API Server is running at localhost:9999");
@@ -66,7 +69,7 @@ public class TestPeers {
         addrMap.put(8003,"http://localhost:8003");
         String[] addrs = new String[]{"http://localhost:8001","http://localhost:8002","http://localhost:8003"};
         geecache gee = test.creatGroup();
-        if(api == 1){
+        if(api == 1){ // main ?
             test.startAPIServer(apiAddr,gee);
         }
         test.startCacheServer(port,addrMap.get(port),addrs,gee);

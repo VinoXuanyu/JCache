@@ -8,7 +8,62 @@
         "keyeeee": "dagdsa"
        }
 
-2. 控制台： 每次启动缓存服务同时启动控制台服务
+
+
+
+
+
+2. 控制台：
+
+
+所有节点都要实现的API：
+  method |   prefix    | parameters    | example                        |    response
+
+ 1. GET  |/api/status|  node           | api/status/?node=localhost:8001| {
+                                                                              code: 200,
+                                                                              data: {
+                                                                                     "nodes": "localhost:8001",
+                                                                                     "groups": ["scores", "teachers"....],
+                                                                                     "request_num": 10000,
+                                                                                     "hit_num": 7000,
+                                                                                     "hit_rate": 0.7
+                                                                                    }
+                                                                              status: "succuess"/"failed ...."
+                                                                            }
+ 2. GET  |   /api/get  |  group, key   | api/get/?group=scores&key=math | {
+                                                                             code: 200,
+                                                                             data: 100,
+                                                                             status: "succuess"/"failed ...."
+                                                                           }
+
+主节点需要实现的：
+
+ 3. GET  |   /api/     |               | api/                           |    index.html
+
+ 4. GET  | /api/nodes  |               | api/nodes                       | {
+                                                                            code: 200,
+                                                                            data: ["localhost:8001", "127.0.0.1:8343" ...],
+                                                                            status: "succuess"/"failed ...."
+                                                                           }
+ 5.GET  | /api/overview|                 |   /api/overview                  |  {data: ["localhost:8001": {
+                                                                                                          "nodes": "localhost:8001",
+                                                                                                          "groups": ["scores", "teachers"....],
+                                                                                                          "request_num": 10000,
+                                                                                                          "hit_num": 7000,
+                                                                                                          "hit_rate": 0.7
+                                                                                                         },
+                                                                                        "127.0.0.1:7999":{
+                                                                                                           "nodes": "localhost:8001",
+                                                                                                           "groups": ["scores", "teachers"....],
+                                                                                                           "request_num": 10000,
+                                                                                                           "hit_num": 7000,
+                                                                                                           "hit_rate": 0.7
+                                                                                                          }
+                                                                                         ]
+                                                                                }
+
+所有节点都要实现的api
+
  /index.html
  /api/status: 返回当前可用的缓存节点 {ip: xxxx, key_in_live: 345234}
 

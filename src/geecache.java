@@ -6,7 +6,8 @@ public class geecache {
     public String name;
     public IPeerPicker peers;
     public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
-
+    // public static Integer requestReceiveNum = 0 TODO：tangbo
+    // public static Integer cacheHitNum = 0
     // TODO: Lishengze. 添加新的成员变量 getter i.e. public IGetter getter = xxxxx; 其中getter为实现了IGetter接口的类  IGetter定义：{public byteview get(String);}
 
     public static HashMap<String, geecache> groups = new HashMap<>();

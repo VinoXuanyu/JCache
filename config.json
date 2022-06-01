@@ -1,3 +1,5 @@
 {
-  "bak": "/etc/geecache/history.json"
+  "bak": "/etc/geecache/history.json",
+  "mainNode": "localhost:8888"
+//  # localhost:8888/api/node/?node=localhost:8002
 }
