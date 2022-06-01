@@ -1,0 +1,18 @@
+1. 持久化 （local组）
+   1.1 /etc/geecache/history.log |  cachebytes ( -100 GET)
+   1.2 /etc/geecache/history.json | 每隔10S 把当前lru中的值写进  下次重启的时候从这个文件里读取
+   for key,value in lru:
+        fp.write( .... )
+       {
+        "beihing": "good",
+        "keyeeee": "dagdsa"
+       }
+
+2. 控制台： 每次启动缓存服务同时启动控制台服务
+ /index.html
+ /api/status: 返回当前可用的缓存节点 {ip: xxxx, key_in_live: 345234}
+
+
+
+
+

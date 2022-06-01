@@ -1,3 +1,4 @@
+import byteview.byteview;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -131,7 +132,7 @@ class APIhttp implements HttpHandler {
             return;
         }
         this.log("%s found in %s", key, groupName);
-        String s = new String(ret.bytes);
+        String s = new String(ret.bytes());
         this.log("%s value is %s", key, s);
 
         httpExchange.sendResponseHeaders(200, 0);
