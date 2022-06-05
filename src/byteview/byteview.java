@@ -1,26 +1,36 @@
 package byteview;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 public class byteview {
     byte[] bytes;
 
-    public byte[] stringToBytes(String str) {
+    public byteview(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    public byteview(String str) {
+        this.bytes = str.getBytes(StandardCharsets.UTF_8);
+    }
+
+
+    @Override
+    public String toString() {
+        return "byteview{" +
+                "bytes=" + Arrays.toString(bytes) +
+                '}';
+    }
+
+    public long len() {
+        return this.bytes.length;
+    }
+
+    public byte[] toString(String str) {
         return str.getBytes(StandardCharsets.UTF_8);
     }
+
     public byte[] bytes() {
         return bytes;
     }
-
-    public byteview(byte[] bytes) {};
-
-    public byteview(String str){
-        this.bytes = str.getBytes(StandardCharsets.UTF_8);
-
-    }
-    public static void main(String[] args){
-        byteview b=new byteview("123");
-        String s =new String(b.bytes);
-        System.out.println(s);
-    }
-
 }

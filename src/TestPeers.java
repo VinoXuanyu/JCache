@@ -21,9 +21,9 @@ public class TestPeers {
     public void startCacheServer(int port, String addr, String[] addrs,geecache gee){
         http peers = new http(addr);
         peers.setPeers(addrs);
-        geecache.mainCache.put(String.format("%s%d", port, 4), Integer.toString(port)); // {80011:8001 ... }
-        geecache.mainCache.put(String.format("%s%d", port, 5), Integer.toString(port));
-        geecache.mainCache.put(String.format("%s%d", port, 6), Integer.toString(port));
+        geecache.mainCache.put(String.format("%s%d", port, 4), new byteview(Integer.toString(port))); // {80011:8001 ... }
+        geecache.mainCache.put(String.format("%s%d", port, 5), new byteview(Integer.toString(port)));
+        geecache.mainCache.put(String.format("%s%d", port, 6), new byteview(Integer.toString(port)));
         gee.registerPeers(peers);
         System.out.println("structure.geecache is running at"+addr);
         try {
