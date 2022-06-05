@@ -1,14 +1,18 @@
 package singleflight;
+
+import byteview.byteview;
+
 import java.util.concurrent.CountDownLatch;
+
 public class call {
-    private byte[] val;
+    private byteview val;
     private CountDownLatch cld;
 
-    public byte[] getVal() {
+    public byteview getVal() {
         return val;
     }
 
-    public void setVal(byte[] val) {
+    public void setVal(byteview val) {
         this.val = val;
     }
 

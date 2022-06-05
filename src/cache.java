@@ -1,11 +1,14 @@
 import byteview.byteview;
+import byteview.Supplier;
 import lru.lru;
 
 import java.util.HashMap;
 
-public class cache {
+public class cache implements Supplier{
     public lru l;
     public int cacheByte;
+
+    @Override
     public byteview get(String key) {
         int num=0;
         num=Integer.valueOf(dic.get(key));

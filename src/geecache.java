@@ -1,11 +1,14 @@
 import byteview.byteview;
+import singleflight.singleflight;
+
 import java.util.HashMap;
 
 public class geecache {
     public String name;
     public IPeerPicker peers;
     //public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
-    public  static cache mainCache=new cache();
+    static cache mainCache=new cache();
+    public singleflight calls;
     interface IGetter{
         public byteview get(String key);
     }
@@ -27,14 +30,19 @@ public class geecache {
         geecache.groups.put(name, group);
         return group;
     }
+
+    // 这个是geecache里的get方法，暴露给用户 e.g. mycache = new geecache();  byteview val = geecache.get(key)；
     public byteview get(String key){  // TODO: Yanglichao： 使用singleflight算法包装get方法
         // 1. 本地的miancache里 （cache -> lru ) value ? exist :
         // 2.1 检查是否应该去别的节点查找  是： 那就向其他的节点发起http请求？ 不是/pickpeer找到自己的情况：通过getter从本地获取
-        String ret = String.valueOf(mainCache.get(key));
+        if (this.calls == null) {
+            this.calls = new singleflight();
+        }
+        byteview ret = this.calls.run(key, this.mainCache);
         if (ret == null) {
             return load(key);
         } else {
-            return new byteview(ret);
+            return ret;
         }
     }
 

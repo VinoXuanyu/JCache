@@ -15,7 +15,6 @@ public class byteview {
 
     public byteview(String str){
         this.bytes = str.getBytes(StandardCharsets.UTF_8);
-
     }
 
 }
