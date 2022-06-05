@@ -15,10 +15,15 @@ public class lru {
     public lru(long maxBytes) {
         this.maxBytes = maxBytes;
         this.keyNodeMap = new HashMap<>();
+        this.nodeKeyMap = new HashMap<>();
+        this.ll = new DoubleLinkedList();
     }
 
     public byteview get(String key) {
         Node node = this.keyNodeMap.get(key);
+        if (node == null){
+            return null;
+        }
         this.ll.moveToFirst(node);
         return node.val;
     }

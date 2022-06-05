@@ -32,6 +32,8 @@ public class DoubleLinkedList {
     public DoubleLinkedList() {
         this.head = new Node(new byteview("1"));
         this.tail = new Node(new byteview("1"));
+        head.next = tail;
+        tail.prev = head;
     }
 
 

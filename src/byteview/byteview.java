@@ -1,7 +1,6 @@
 package byteview;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class byteview {
     byte[] bytes;
@@ -18,7 +17,7 @@ public class byteview {
     @Override
     public String toString() {
         return "byteview{" +
-                "bytes=" + Arrays.toString(bytes) +
+                "bytes=" + new String(bytes) +
                 '}';
     }
 
@@ -26,8 +25,8 @@ public class byteview {
         return this.bytes.length;
     }
 
-    public byte[] toString(String str) {
-        return str.getBytes(StandardCharsets.UTF_8);
+    public String string() {
+        return new String(bytes);
     }
 
     public byte[] bytes() {
