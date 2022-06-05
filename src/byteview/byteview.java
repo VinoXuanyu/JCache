@@ -15,6 +15,12 @@ public class byteview {
 
     public byteview(String str){
         this.bytes = str.getBytes(StandardCharsets.UTF_8);
+
+    }
+    public static void main(String[] args){
+        byteview b=new byteview("123");
+        String s =new String(b.bytes);
+        System.out.println(s);
     }
 
 }

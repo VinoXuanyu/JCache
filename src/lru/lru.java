@@ -5,6 +5,7 @@ import byteview.byteview;
 public class lru {
     public int maxBytes;
     public int nbytes;
+    public int lock=0;
     public DoubleLinkedList ll;
 
     public byteview get(int key){

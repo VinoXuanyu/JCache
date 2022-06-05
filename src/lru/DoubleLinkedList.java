@@ -1,18 +1,19 @@
 package lru;
-
+import byteview.byteview;
 class Node{
-    public int data;//数据域
+    //数据域
+    public byteview b;
     public Node next;//后继指针域
     public Node prev;//前驱指针域
 
-    public Node(int data) {
-        this.data = data;
+    public Node(byteview b) {
+        this.b = b;
         this.next = null;
         this.prev = null;
     }
     //显示该结点的具体数值
     public void display() {
-        System.out.print( data + " ");
+        System.out.print( b + " ");
     }
 }
 
@@ -20,19 +21,14 @@ public class DoubleLinkedList {
 
     public  Node head = null;//表头
     public  int length = 0;
-    public String[] keys;
-    public int[] values;
 
 
     //头插法
-    public DoubleLinkedList(){
-        keys=new String[100];
-        values=new int[100];
-    }
+    public DoubleLinkedList(){}
 
 
-    public  void addHead(int data) {
-        Node newNode = new Node(data);
+    public  void addHead(byteview b) {
+        Node newNode = new Node(b);
         if(head == null) {
             head = newNode;//如果链表为空，增加新结点
         }
@@ -44,8 +40,8 @@ public class DoubleLinkedList {
         length++;
     }
     //尾插法
-    public  void addTail(int data) {
-        Node newNode = new Node(data);
+    public  void addTail(byteview b) {
+        Node newNode = new Node(b);
         if (head == null) {
             head = newNode;
         } else {
@@ -123,8 +119,8 @@ public class DoubleLinkedList {
     }
 
     //在指定位置插入结点
-    public  void insertList(int data, int index) {
-        Node newNode = new Node(data);
+    public  void insertList(byteview b, int index) {
+        Node newNode = new Node(b);
         if(head == null){
             head = newNode;//链表为空，插入
         }
@@ -181,13 +177,13 @@ public class DoubleLinkedList {
     }
 
     //查找数据是否存在,与单链表一样
-    public  boolean containData(int data) {
+    public  boolean containData(byteview b) {
         if(head == null){
             System.out.println("空表");
             return false;
         }
         Node curNode = head;
-        while(curNode.data!= data){
+        while(curNode.b!= b){
             if(curNode.next == null) {
                 System.out.println("结点数据不存在");
                 return false;
@@ -199,14 +195,14 @@ public class DoubleLinkedList {
     }
 
     //获取指定位置的数据
-    public  int getIndexData(int index) {
+    public  byteview getIndexData(int index) {
         if(head == null){
             System.out.println("空表");
-            return -1;
+            return null;
         }
         if(index > length || index < 1) {
             System.out.println("结点位置不存在");
-            return -1;
+            return null;
         }
         Node curNode = head;
         int count =1;
@@ -216,11 +212,11 @@ public class DoubleLinkedList {
         }
         curNode.display();
         System.out.println();
-        return curNode.data;
+        return curNode.b;
     }
 
     //修改指定位置的结点数据
-    public  void updateIndexData(int index, int data) {
+    public  void updateIndexData(int index, byteview b) {
         if(head == null){
             System.out.println("空表");
         }
@@ -233,85 +229,17 @@ public class DoubleLinkedList {
             curNode =curNode.next;
             count++;
         }
-        curNode.data = data;
+        curNode.b = b;
     }
 
     //打印链表
     public  void printList(){
         Node tmp = head;
         while(tmp != null){
-            System.out.print(tmp.data + " ");
+            System.out.print(tmp.b + " ");
             tmp = tmp.next;
         }
         System.out.println();
     }
-    //查找功能
-    public int lookup(String key){
-        int i;
-        int j;
-        int data;
-        for(i=0;i<keys.length;i++){
-            if(keys[i]!=null && keys[i].equals(key)){
-                break;
-            }
-        }
-        data=getIndexData(values[i]);
-        deleteList(values[i]);
-        addTail(data);
-        for(j=0;j< values.length;j++){
-            if(values[j]>values[i]){
-                values[j]-=1;
-            }
-        }
-        values[i]=length;
-        return data;
 
-    }
-    //删除功能
-    public int RemoveOldest(){
-        int temp=head.data;
-        deleteHead();
-        int i;
-        for(i=0;i< values.length;i++){
-            if(values[i]==1){
-                keys[i]=null;
-            }
-            if(values[i]!=0) values[i]-=1;
-        }
-        return temp;
-    }
-    //修改功能
-    public void update(String key,int data){
-        int i;
-        int j;
-        int index=-1;
-        for(i=0;i< keys.length;i++){
-            if(keys[i]!=null && keys[i].equals(key)){
-                index=values[i];
-                break;
-
-            }
-        }
-        if(index==-1){
-            addTail(data);
-            for(i=0;i< keys.length;i++){
-                if(keys[i]==null){
-                    keys[i]=key;
-                    values[i]=length;
-                    break;
-
-                }
-            }
-            return;
-        }
-        for(j=0;j< values.length;j++){
-            if(values[j]>index){
-                values[j]-=1;
-            }
-        }
-        deleteList(index);
-        addTail(data);
-        values[i]=length;
-
-    }
 }

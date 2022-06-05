@@ -2,13 +2,12 @@ import byteview.byteview;
 import singleflight.singleflight;
 
 import java.util.HashMap;
-
 public class geecache {
     public String name;
     public IPeerPicker peers;
     //public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
-    static cache mainCache=new cache();
-    public singleflight calls;
+    public  static cache mainCache=new cache();
+    public singleflight calls=new singleflight();
     interface IGetter{
         public byteview get(String key);
     }
@@ -30,7 +29,6 @@ public class geecache {
         geecache.groups.put(name, group);
         return group;
     }
-
     // 这个是geecache里的get方法，暴露给用户 e.g. mycache = new geecache();  byteview val = geecache.get(key)；
     public byteview get(String key){  // TODO: Yanglichao： 使用singleflight算法包装get方法
         // 1. 本地的miancache里 （cache -> lru ) value ? exist :
@@ -74,14 +72,14 @@ public class geecache {
 
     // TODO: Lishengze 调用getter.get 从数据源获取数据
     public byteview getLocally(String key){
-        populateCache(key,getter.get(key));
+        populateCache(getter.get(key));
         return getter.get(key);
     }
 
     // TODO: Lishengze populateCache 将数据添加到mainCache中
-    public void populateCache(String key,byteview b){
-        String str= new String(b.bytes());
-        mainCache.put(key,str);
+    public void populateCache(byteview b){
+        mainCache.put(b);
+
     }
     public byteview getFromPeer(IPeerGetter getter, String key) {
         System.out.println("getFromPeer: "+getter.toString()+"  "+this.name);
