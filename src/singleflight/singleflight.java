@@ -1,17 +1,19 @@
 package singleflight;
 
+import byteview.Supplier;
+import byteview.byteview;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
 
-public class Process {
+public class singleflight {
     private final Lock lock = new ReentrantLock();
     private Map<String, call> callMap;
 
-    public byte[] run(String key, Supplier<byte[]> func) {
+    public byteview run(String key, Supplier getter) {
         this.lock.lock();
         if (this.callMap == null) {
             this.callMap = new HashMap<>();
@@ -27,7 +29,7 @@ public class Process {
         this.callMap.put(key, call);
         this.lock.unlock();
 
-        call.setVal(func.get());
+        call.setVal(getter.get(key));
         call.done();
 
         this.lock.lock();
