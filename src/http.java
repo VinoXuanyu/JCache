@@ -2,6 +2,7 @@ import byteview.byteview;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import consistenthash.consistenthash;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class http implements HttpHandler, IPeerPicker{
     String self;
     String basePath;
     Lock mu;
-    consistenthash.consistenthash peers;//新增成员变量 peers，类型是一致性哈希算法的 Map，用来根据具体的 key 选择节点
+    consistenthash peers;//新增成员变量 peers，类型是一致性哈希算法的 Map，用来根据具体的 key 选择节点
     HashMap<String, HttpGetter> httpGetters;//新增成员变量 httpGetters，映射远程节点与对应的 httpGetter。每一个远程节点对应一个 httpGetter，
                                             // 因为 httpGetter 与远程节点的地址 baseURL 有关
     public static String defaultBasePath = "/_jcache/";
@@ -104,7 +105,7 @@ public class http implements HttpHandler, IPeerPicker{
                                             //并为每一个节点创建了一个 HTTP 客户端 httpGetter
         this.mu.lock();
 
-        this.peers = new consistenthash.consistenthash(defaultReplicas, null);
+        this.peers = new consistenthash(defaultReplicas, null);
         this.peers.add(peers);
         this.httpGetters = new HashMap<>();
         for (String peer : peers) {
