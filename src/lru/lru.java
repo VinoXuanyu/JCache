@@ -7,7 +7,9 @@ public class lru {
     public int nbytes;
     public DoubleLinkedList ll;
 
-    public byteview get(String key){return null;}; // TODO: Lishengze. LRU的get方法由cache.get调用
+    public byteview get(int key){
+        byteview b=new byteview(String.valueOf(ll.getIndexData(key)));
+        return b;
+    }; // TODO: Lishengze. LRU的get方法由cache.get调用
     lru(){}
 }
-

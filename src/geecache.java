@@ -1,14 +1,16 @@
 import byteview.byteview;
-
 import java.util.HashMap;
 
 public class geecache {
     public String name;
     public IPeerPicker peers;
-    public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
-
+    //public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
+    public  static cache mainCache=new cache();
+    interface IGetter{
+        public byteview get(String key);
+    }
+    public IGetter getter;
     // TODO: Lishengze. 添加新的成员变量 getter i.e. public IGetter getter = xxxxx; 其中getter为实现了IGetter接口的类  IGetter定义：{public byteview get(String);}
-
     public static HashMap<String, geecache> groups = new HashMap<>();
 
     public static geecache getGroup(String groupName){
@@ -25,12 +27,10 @@ public class geecache {
         geecache.groups.put(name, group);
         return group;
     }
-    // TODO: Lishengze 添加新的构造函数，参数为name 和 getter
-
     public byteview get(String key){  // TODO: Yanglichao： 使用singleflight算法包装get方法
         // 1. 本地的miancache里 （cache -> lru ) value ? exist :
         // 2.1 检查是否应该去别的节点查找  是： 那就向其他的节点发起http请求？ 不是/pickpeer找到自己的情况：通过getter从本地获取
-        String ret = mainCache.get(key);
+        String ret = String.valueOf(mainCache.get(key));
         if (ret == null) {
             return load(key);
         } else {
@@ -66,11 +66,15 @@ public class geecache {
 
     // TODO: Lishengze 调用getter.get 从数据源获取数据
     public byteview getLocally(String key){
-        return null;
+        populateCache(key,getter.get(key));
+        return getter.get(key);
     }
 
     // TODO: Lishengze populateCache 将数据添加到mainCache中
-
+    public void populateCache(String key,byteview b){
+        String str= new String(b.bytes());
+        mainCache.put(key,str);
+    }
     public byteview getFromPeer(IPeerGetter getter, String key) {
         System.out.println("getFromPeer: "+getter.toString()+"  "+this.name);
 
