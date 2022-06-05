@@ -23,6 +23,9 @@ public class cache implements Supplier {
     }
 
     public void put(String key, byteview data) {
+        if (data == null){
+            return;
+        }
         this.mu.lock();
         this.lru.put(key, data);
         this.mu.lock();

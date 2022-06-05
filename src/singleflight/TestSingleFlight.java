@@ -4,7 +4,7 @@ import byteview.byteview;
 
 import java.util.concurrent.CountDownLatch;
 
-public class testSingleflight {
+public class TestSingleFlight {
     public static void main(String[] args) {
         singleflight callManage = new singleflight();
         int count = 10;

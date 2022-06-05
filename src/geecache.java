@@ -11,9 +11,6 @@ public class geecache {
     public static cache mainCache = new cache(defaultVolume);
     public singleflight calls = new singleflight();
 
-    interface IGetter {
-        public byteview get(String key);
-    }
 
     public IGetter getter;
     // TODO: Lishengze. 添加新的成员变量 getter i.e. public IGetter getter = xxxxx; 其中getter为实现了IGetter接口的类  IGetter定义：{public byteview get(String);}
@@ -27,7 +24,10 @@ public class geecache {
         this.name = name;
     }
 
-    ;
+    public geecache(String name, IGetter getter){
+        this.name = name;
+        this.getter = getter;
+    }
 
     public static geecache newGroup(String name) {
 
@@ -71,8 +71,9 @@ public class geecache {
 
             return this.getFromPeer(getter, key);
         } else {
-            System.out.println("查找load peers为空" + this.getLocally(key));
-            return this.getLocally(key); // -> getter
+            byteview ret = this.getLocally(key);
+            System.out.println("查找load peers为空" + ret);
+            return ret; // -> getter
         }
     }
 
