@@ -38,7 +38,7 @@ public class geecache {
     public static geecache newGroup(String name) {
         // TODO(persistence)：
         //  1. 调用Recover 恢复备份
-        //  2. 开启备份线程 e.g. geecache.backupWorker = new Thread(geecache.backup); Thread.run();
+        //  2. 开启备份线程 e.g. backupWorker = new Thread(geecache.backup); backupWorker.run();
 
         geecache group = new geecache(name);
         geecache.groups.put(name, group);
