@@ -6,18 +6,27 @@ import java.util.HashMap;
 public class geecache {
     public String name;
     public static long defaultVolume = 10000000;
-    public IPeerPicker peers;
-    //public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
     public static cache mainCache = new cache(defaultVolume);
+    public IPeerPicker peers;
     public singleflight calls = new singleflight();
 
-
     public IGetter getter;
-    // TODO: Lishengze. 添加新的成员变量 getter i.e. public IGetter getter = xxxxx; 其中getter为实现了IGetter接口的类  IGetter定义：{public byteview get(String);}
+
+    {
+        utils.welcome();
+    }
+
     public static HashMap<String, geecache> groups = new HashMap<>();
 
     public static geecache getGroup(String groupName) {
         return groups.get(groupName);
+    }
+
+    public static geecache newGroup(String name) {
+
+        geecache group = new geecache(name);
+        geecache.groups.put(name, group);
+        return group;
     }
 
     public geecache(String name) {
@@ -27,13 +36,6 @@ public class geecache {
     public geecache(String name, IGetter getter){
         this.name = name;
         this.getter = getter;
-    }
-
-    public static geecache newGroup(String name) {
-
-        geecache group = new geecache(name);
-        geecache.groups.put(name, group);
-        return group;
     }
 
     // 这个是geecache里的get方法，暴露给用户 e.g. mycache = new geecache();  byteview val = geecache.get(key)；
