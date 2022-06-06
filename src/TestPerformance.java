@@ -2,7 +2,7 @@ import byteview.byteview;
 import getters.IGetter;
 import getters.mysqlGetter;
 
-public class demo {
+public class TestPerformance {
     public static void main(String[] args) {
         IGetter getter = new mysqlGetter("test", "root", "jin196632");
         geecache cache = new geecache("websites", getter);
