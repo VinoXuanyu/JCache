@@ -1,3 +1,5 @@
+package utils;
+
 public class utils {
     public static void welcome(){
         System.out.println(" .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. \n" +
