@@ -1,4 +1,6 @@
 import byteview.byteview;
+import getters.IGetter;
+import getters.mysqlGetter;
 
 public class demo {
     public static void main(String[] args) {

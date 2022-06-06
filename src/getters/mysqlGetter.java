@@ -1,12 +1,12 @@
+package getters;
+
 import byteview.byteview;
 
 import java.sql.*;
 
-interface IGetter {
-    byteview get(String key);
-}
 
-class mysqlGetter implements IGetter {
+
+public class mysqlGetter implements IGetter {
     static String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
      String DB_URL;
      String USER;

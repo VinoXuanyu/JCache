@@ -1,6 +1,7 @@
 import byteview.byteview;
+import getters.IGetter;
 import singleflight.singleflight;
-import utils.utils;
+import utils.welcome;
 
 import java.util.HashMap;
 
@@ -14,7 +15,7 @@ public class geecache {
     public IGetter getter;
 
     {
-        utils.welcome();
+        welcome.welcome();
     }
 
     public static HashMap<String, geecache> groups = new HashMap<>();
