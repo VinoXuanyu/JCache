@@ -20,15 +20,32 @@ public class geecache {
 
     public static HashMap<String, geecache> groups = new HashMap<>();
 
-    public static geecache getGroup(String groupName) {
-        return groups.get(groupName);
+    // TODO(persistence): 此为备份工作线程， 此线程每隔固定时间(config.backupInterval),
+    //                    扫描groups中的所有geecache， 并保存当前lru内容备份。
+    public static Thread backupWorker;
+
+    public static void backup(){
+        // TODO (persistence): 备份子线程要执行的runable
+    }
+
+    public static void recover(String name){
+        // TODO(persistence):
+        //  1. 读取config.json， 找到备份文件所在位置
+        //  2. 去备份文件夹里找对应的备份文件 backup_name.json
+        //  3. 读取备份文件， 调用pupulate方法， 将键值对存进LRU中
     }
 
     public static geecache newGroup(String name) {
+        // TODO(persistence)：
+        //  1. 调用Recover 恢复备份
+        //  2. 开启备份线程 e.g. geecache.backupWorker = new Thread(geecache.backup); Thread.run();
 
         geecache group = new geecache(name);
         geecache.groups.put(name, group);
         return group;
+    }
+    public static geecache getGroup(String groupName) {
+        return groups.get(groupName);
     }
 
     public geecache(String name) {
