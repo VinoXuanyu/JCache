@@ -1,4 +1,5 @@
 import byteview.byteview;
+import getters.IGetter;
 
 import java.util.HashMap;
 class testGetter implements IGetter{
@@ -16,7 +17,7 @@ class testGetter implements IGetter{
 public class TestApi {
     public static void main(String[] args) {
         String[] addrs = new String[]{"http://localhost:8996", "http://localhost:8997", "http://localhost:8998"};
-        geecache group =  geecache.newGroup("test", new testGetter());
+        geecache group =  geecache.newGroup("test", (IGetter) new testGetter());
         APIServer.startMainServer(0, group, addrs);
         for (String addr : addrs) {
             APIServer.startSubServer(addr, group);
