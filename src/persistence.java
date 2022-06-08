@@ -13,7 +13,7 @@ public class persistence {
     persistence(){}
 
     //根据文件名将json文件中的内容恢复到lru中
-    void recover(String name) throws FileNotFoundException {
+    geecache recover(String name) throws FileNotFoundException {
         String key;
         byteview data;
         String dataa;
@@ -24,7 +24,6 @@ public class persistence {
         JsonParser parse=new JsonParser();
         JsonObject json=(JsonObject) parse.parse(new FileReader(file_location));
         String l=json.toString();
-        System.out.println(l);
         Iterator iter = json.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -33,6 +32,7 @@ public class persistence {
             data=new byteview(dataa);
             tempcache.mainCache.put(key,data);
         }
+        return tempcache;
     }
     //根据group名从json文件恢复缓存
     void preserve(String name){
