@@ -15,7 +15,7 @@ public class TestPeers {
 
     public geecache gee;
     public geecache creatGroup(){
-        gee = geecache.newGroup("scores");
+        gee = geecache.newGroup("scores",new testGetter());
         return gee;
     }
     public void startCacheServer(int port, String addr, String[] addrs,geecache gee){
@@ -61,9 +61,9 @@ public class TestPeers {
 
         int port = Integer.parseInt(ll[0]);
         int api = Integer.parseInt(ll[1]);
-        String apiAddr = "";
+        String apiAddr;
         apiAddr = "http://localhost:9999";
-        HashMap<Integer,String> addrMap = new HashMap<Integer,String>();
+        HashMap<Integer,String> addrMap = new HashMap<>();
         addrMap.put(8001,"http://localhost:8001");
         addrMap.put(8002,"http://localhost:8002");
         addrMap.put(8003,"http://localhost:8003");
