@@ -1,4 +1,4 @@
 {
-  "backupFilesDir":  // TODO(persistence): 最外层的config文件里存放备份文件的位置 e.g. ./backups
-  "backupInterval":  // 备份间隔时间， e.g. 5
+  "backupFilesDir": "backups",
+  "backupInterval": 10
 }

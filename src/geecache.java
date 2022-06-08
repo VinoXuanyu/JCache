@@ -2,11 +2,15 @@ import byteview.byteview;
 import getters.IGetter;
 import singleflight.singleflight;
 import utils.welcome;
-import java.util.HashMap;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
 public class geecache {
     public String name;
     public static long defaultVolume = 10000000;
-    public static cache mainCache = new cache(defaultVolume);
+    public  cache mainCache = new cache(defaultVolume);
     public IPeerPicker peers;
     public singleflight calls = new singleflight();
 
@@ -20,24 +24,31 @@ public class geecache {
 
     // TODO(persistence): 此为备份工作线程， 此线程每隔固定时间(config.backupInterval),
     //                    扫描groups中的所有geecache， 并保存当前lru内容备份。
-    public static Thread backupWorker;
 
-    public static void backup(){
-        // TODO (persistence): 备份子线程要执行的runable
-    }
 
-    public static void recover(String name){
+
+    public static void recover(String name) throws FileNotFoundException {
+        persistence p = new persistence();
+        p.recover(name);
         // TODO(persistence):
         //  1. 读取config.json， 找到备份文件所在位置
         //  2. 去备份文件夹里找对应的备份文件 backup_name.json
         //  3. 读取备份文件， 调用pupulate方法， 将键值对存进LRU中
     }
 
-    public static geecache newGroup(String name) {
+    public static geecache newGroup(String name) throws FileNotFoundException {
         // TODO(persistence)：
         //  1. 调用Recover 恢复备份
         //  2. 开启备份线程 e.g. backupWorker = new Thread(geecache.backup); backupWorker.run();
-
+        File file = new File("backups");
+        String[] fileNameLists = file.list();
+        for(int i=0;i<fileNameLists.length;i++){
+            fileNameLists[i]=fileNameLists[i].substring(8);
+            fileNameLists[i]=fileNameLists[i].substring(0,fileNameLists[i].length()-6);
+            recover(fileNameLists[i]);
+        }
+        backupworker backupWorker = new backupworker();
+        backupWorker.run();
         geecache group = new geecache(name);
         geecache.groups.put(name, group);
         return group;
@@ -46,9 +57,7 @@ public class geecache {
         return groups.get(groupName);
     }
 
-    public geecache(String name) {
-        this.name = name;
-    }
+    public geecache(String name) {this.name = name;}
 
     public geecache(String name, IGetter getter){
         this.name = name;
@@ -114,4 +123,21 @@ public class geecache {
 
         return getter.get(this.name, key);
     }//使用实现了 PeerGetter 接口的 httpGetter 从访问远程节点，获取缓存值。
+}
+
+class backupworker extends Thread {
+    public void run(){
+        while (true) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            persistence p = new persistence();
+            Set<Map.Entry<String, geecache>> entrySet = geecache.groups.entrySet();
+            for (Map.Entry<String, geecache> entry : entrySet) {
+                p.preserve(entry.getKey());
+            }
+        }
+    }
 }
