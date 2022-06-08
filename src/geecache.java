@@ -152,11 +152,3 @@ class backupworker extends Thread {
         }
     }
 }
-class worker extends Thread {
-    public geecache run(String name){
-        geecache group = new geecache(name);
-        geecache.groups.put(name, group);
-        return group;
-
-    }
-}
