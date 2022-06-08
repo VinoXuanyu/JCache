@@ -36,13 +36,14 @@ public class geecache {
 
 
 
-    public static void recover(String name) throws FileNotFoundException {
+    public static geecache recover(String name) throws FileNotFoundException {
         persistence p = new persistence();
         p.recover(name);
         // TODO(persistence):
         //  1. 读取config.json， 找到备份文件所在位置
         //  2. 去备份文件夹里找对应的备份文件 backup_name.json
         //  3. 读取备份文件， 调用pupulate方法， 将键值对存进LRU中
+        return null;
     }
 
     public static geecache newGroup(String name) throws FileNotFoundException {
@@ -50,15 +51,25 @@ public class geecache {
         //  1. 调用Recover 恢复备份
         //  2. 开启备份线程 e.g. backupWorker = new Thread(geecache.backup); backupWorker.run();
         File file = new File("backups");
+        int flag=0;
         String[] fileNameLists = file.list();
         for(int i=0;i<fileNameLists.length;i++){
             fileNameLists[i]=fileNameLists[i].substring(8);
             fileNameLists[i]=fileNameLists[i].substring(0,fileNameLists[i].length()-5);
-            recover(fileNameLists[i]);
+            if(fileNameLists[i].equals(name)){
+                flag=1;
+                break;
+            }
+        }
+        geecache group;
+        if(flag==1){
+            persistence p =new persistence();
+            group=p.recover(name);
+        }else{
+            group=new geecache(name);
         }
         backupworker backupWorker = new backupworker();
-        backupWorker.run();
-        geecache group = new geecache(name);
+        backupWorker.start();
         geecache.groups.put(name, group);
         return group;
     }
@@ -144,15 +155,15 @@ public class geecache {
 class backupworker extends Thread {
     public void run(){
         while (true) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             persistence p = new persistence();
             Set<Map.Entry<String, geecache>> entrySet = geecache.groups.entrySet();
             for (Map.Entry<String, geecache> entry : entrySet) {
                 p.preserve(entry.getKey());
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
