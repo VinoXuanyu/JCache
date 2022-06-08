@@ -16,21 +16,25 @@ public class persistence {
     void recover(String name) throws FileNotFoundException {
         String key;
         byteview data;
+        String dataa;
         String file_name=base+"_"+name+".json";
         String file_location=base+"/"+file_name;
-        geecache tempcache=geecache.newGroup(name);
+        geecache tempcache=new geecache(name);
         geecache.groups.put(name, tempcache);
         JsonParser parse=new JsonParser();
         JsonObject json=(JsonObject) parse.parse(new FileReader(file_location));
+        String l=json.toString();
+        System.out.println(l);
         Iterator iter = json.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             key=entry.getKey().toString();
-            data=(byteview) entry.getValue();
+            dataa= entry.getValue().toString();
+            data=new byteview(dataa);
             tempcache.mainCache.put(key,data);
         }
     }
-    //
+    //根据group名从json文件恢复缓存
     void preserve(String name){
         String file_name=base+"_"+name+".json";
         String file_location=base+"/"+file_name;

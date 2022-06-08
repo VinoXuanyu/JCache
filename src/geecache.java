@@ -44,7 +44,7 @@ public class geecache {
         String[] fileNameLists = file.list();
         for(int i=0;i<fileNameLists.length;i++){
             fileNameLists[i]=fileNameLists[i].substring(8);
-            fileNameLists[i]=fileNameLists[i].substring(0,fileNameLists[i].length()-6);
+            fileNameLists[i]=fileNameLists[i].substring(0,fileNameLists[i].length()-5);
             recover(fileNameLists[i]);
         }
         backupworker backupWorker = new backupworker();
