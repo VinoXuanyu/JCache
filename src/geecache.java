@@ -1,37 +1,81 @@
 import byteview.byteview;
 import singleflight.singleflight;
+import getters.IGetter;
+import utils.welcome;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class geecache {
     public String name;
     public static long defaultVolume = 10000000;
+    //public  cache mainCache = new cache(defaultVolume);
     public IPeerPicker peers;
     //public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
     public static cache mainCache = new cache(defaultVolume);
+    public static int requestReceiveNum = 0;
+    public static int cacheHitNum = 0;
+    public static HashSet<String> nodes = new HashSet<>();
+
     public singleflight calls = new singleflight();
 
-    interface IGetter {
-        public byteview get(String key);
+    public IGetter getter;
+
+    {
+        welcome.welcome();
     }
 
-    public IGetter getter;
-    // TODO: Lishengze. 添加新的成员变量 getter i.e. public IGetter getter = xxxxx; 其中getter为实现了IGetter接口的类  IGetter定义：{public byteview get(String);}
     public static HashMap<String, geecache> groups = new HashMap<>();
 
+    // TODO(persistence): 此为备份工作线程， 此线程每隔固定时间(config.backupInterval),
+    //                    扫描groups中的所有geecache， 并保存当前lru内容备份。
+
+
+
+    public static void recover(String name) throws FileNotFoundException {
+        persistence p = new persistence();
+        p.recover(name);
+        // TODO(persistence):
+        //  1. 读取config.json， 找到备份文件所在位置
+        //  2. 去备份文件夹里找对应的备份文件 backup_name.json
+        //  3. 读取备份文件， 调用pupulate方法， 将键值对存进LRU中
+    }
+
+    public static geecache newGroup(String name) throws FileNotFoundException {
+        // TODO(persistence)：
+        //  1. 调用Recover 恢复备份
+        //  2. 开启备份线程 e.g. backupWorker = new Thread(geecache.backup); backupWorker.run();
+        File file = new File("backups");
+        String[] fileNameLists = file.list();
+        for(int i=0;i<fileNameLists.length;i++){
+            fileNameLists[i]=fileNameLists[i].substring(8);
+            fileNameLists[i]=fileNameLists[i].substring(0,fileNameLists[i].length()-5);
+            recover(fileNameLists[i]);
+        }
+        backupworker backupWorker = new backupworker();
+        backupWorker.run();
+        geecache group = new geecache(name);
+        geecache.groups.put(name, group);
+        return group;
+    }
     public static geecache getGroup(String groupName) {
         return groups.get(groupName);
     }
 
-    public geecache(String name) {
+    public geecache(String name) {this.name = name;}
+
+    public geecache(String name, IGetter getter){
         this.name = name;
+        this.getter = getter;
     }
 
-    ;
+    public static geecache newGroup(String name, IGetter getter) {
 
-    public static geecache newGroup(String name) {
-
-        geecache group = new geecache(name);
+        geecache group = new geecache(name,  getter);
         geecache.groups.put(name, group);
         return group;
     }
@@ -43,7 +87,7 @@ public class geecache {
         if (this.calls == null) {
             this.calls = new singleflight();
         }
-        byteview ret = this.calls.run(key, this.mainCache);
+        byteview ret = this.calls.run(key, mainCache);
         if (ret == null) {
             return load(key);
         } else {
@@ -71,8 +115,9 @@ public class geecache {
 
             return this.getFromPeer(getter, key);
         } else {
-            System.out.println("查找load peers为空" + this.getLocally(key));
-            return this.getLocally(key); // -> getter
+            byteview ret = this.getLocally(key);
+            System.out.println("查找load peers为空" + ret);
+            return ret; // -> getter
         }
     }
 
@@ -94,4 +139,21 @@ public class geecache {
 
         return getter.get(this.name, key);
     }//使用实现了 PeerGetter 接口的 httpGetter 从访问远程节点，获取缓存值。
+}
+
+class backupworker extends Thread {
+    public void run(){
+        while (true) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            persistence p = new persistence();
+            Set<Map.Entry<String, geecache>> entrySet = geecache.groups.entrySet();
+            for (Map.Entry<String, geecache> entry : entrySet) {
+                p.preserve(entry.getKey());
+            }
+        }
+    }
 }
