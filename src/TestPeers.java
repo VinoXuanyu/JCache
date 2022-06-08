@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -14,16 +15,18 @@ import java.util.concurrent.locks.Lock;
 public class TestPeers {
 
     public geecache gee;
-    public geecache creatGroup(){
-        gee = geecache.newGroup("scores",new testGetter());
+    public geecache creatGroup() throws FileNotFoundException {
+        gee = geecache.newGroup("scores");
         return gee;
     }
     public void startCacheServer(int port, String addr, String[] addrs,geecache gee){
         http peers = new http(addr);
         peers.setPeers(addrs);
+        /*
         geecache.mainCache.put(String.format("%s%d", port, 4), new byteview(Integer.toString(port))); // {80011:8001 ... }
         geecache.mainCache.put(String.format("%s%d", port, 5), new byteview(Integer.toString(port)));
         geecache.mainCache.put(String.format("%s%d", port, 6), new byteview(Integer.toString(port)));
+        */
         gee.registerPeers(peers);
         System.out.println("structure.geecache is running at"+addr);
         try {
@@ -39,10 +42,8 @@ public class TestPeers {
 
     public void startAPIServer(String apiAddr, geecache gee){
         try {
-            // TODO: tangbo
             HttpServer server4 = HttpServer.create(new InetSocketAddress(9999), 0);
             server4.createContext("/api",new APIhttp("localhost:9999"));
-            server4.createContext("/api/nodes",new APIhttp("localhost:9999"));
             server4.setExecutor(null);
             server4.start();
             System.out.println("API Server is running at localhost:9999");
@@ -52,7 +53,7 @@ public class TestPeers {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         TestPeers test = new TestPeers();
         Scanner in =new Scanner(System.in);
         String argStr=in.nextLine();
@@ -69,7 +70,7 @@ public class TestPeers {
         addrMap.put(8003,"http://localhost:8003");
         String[] addrs = new String[]{"http://localhost:8001","http://localhost:8002","http://localhost:8003"};
         geecache gee = test.creatGroup();
-        if(api == 1){ // main ?
+        if(api == 1){
             test.startAPIServer(apiAddr,gee);
         }
         test.startCacheServer(port,addrMap.get(port),addrs,gee);
