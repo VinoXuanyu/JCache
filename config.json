@@ -1,4 +1,5 @@
 {
   "backupFilesDir": "backups",
-  "backupInterval": 10
+  "backupInterval": 10,
+
 }
