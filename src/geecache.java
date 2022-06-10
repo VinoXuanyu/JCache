@@ -1,4 +1,5 @@
 import byteview.byteview;
+import byteview.Supplier;
 import singleflight.singleflight;
 import getters.IGetter;
 import utils.welcome;
@@ -10,13 +11,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class geecache {
+public class geecache implements Supplier {
     public String name;
     public static long defaultVolume = 10000000;
     //public  cache mainCache = new cache(defaultVolume);
     public IPeerPicker peers;
     //public static HashMap<String, String> mainCache = new HashMap<>();//模拟mainCache TODO: Lishengze， 修改为cache类
-    public static cache mainCache = new cache(defaultVolume);
+    public cache mainCache = new cache(defaultVolume);
     public static int requestReceiveNum = 0;
     public static int cacheHitNum = 0;
     public static HashSet<String> nodes = new HashSet<>();
@@ -91,6 +92,13 @@ public class geecache {
         return group;
     }
 
+    public byteview supply(String key) {
+        byteview ret = this.mainCache.get(key);
+        if (ret == null){
+            ret = this.load(key);
+        }
+        return ret;
+    }
     // 这个是geecache里的get方法，暴露给用户 e.g. mycache = new geecache();  byteview val = geecache.get(key)；
     public byteview get(String key) {  // TODO: Yanglichao： 使用singleflight算法包装get方法
         // 1. 本地的miancache里 （cache -> lru ) value ? exist :
@@ -98,12 +106,7 @@ public class geecache {
         if (this.calls == null) {
             this.calls = new singleflight();
         }
-        byteview ret = this.calls.run(key, mainCache);
-        if (ret == null) {
-            return load(key);
-        } else {
-            return ret;
-        }
+        return this.calls.run(key, this);
     }
 
     public void registerPeers(IPeerPicker peerPicker) {//将 实现了 PeerPicker 接口的 HTTPPool 注入到 Group 中。

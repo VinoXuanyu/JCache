@@ -1,10 +1,9 @@
-import byteview.Supplier;
 import byteview.byteview;
 import lru.lru;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class cache implements Supplier {
+public class cache {
     public lru lru;
     public long cacheByte;
     public ReentrantLock mu;

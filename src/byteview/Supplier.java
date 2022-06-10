@@ -1,5 +1,5 @@
 package byteview;
 
 public interface Supplier {
-    byteview get(String key);
+    byteview supply(String key);
 }

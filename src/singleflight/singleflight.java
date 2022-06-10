@@ -29,7 +29,7 @@ public class singleflight {
         this.callMap.put(key, call);
         this.lock.unlock();
 
-        call.setVal(getter.get(key));
+        call.setVal(getter.supply(key));
         call.done();
 
         this.lock.lock();
