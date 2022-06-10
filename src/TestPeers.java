@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -14,16 +15,18 @@ import java.util.concurrent.locks.Lock;
 public class TestPeers {
 
     public geecache gee;
-    public geecache creatGroup(){
+    public geecache creatGroup() throws FileNotFoundException {
         gee = geecache.newGroup("scores");
         return gee;
     }
     public void startCacheServer(int port, String addr, String[] addrs,geecache gee){
         http peers = new http(addr);
         peers.setPeers(addrs);
-        geecache.mainCache.put(String.format("%s%d", port, 4), Integer.toString(port)); // {80011:8001 ... }
-        geecache.mainCache.put(String.format("%s%d", port, 5), Integer.toString(port));
-        geecache.mainCache.put(String.format("%s%d", port, 6), Integer.toString(port));
+        /*
+        geecache.mainCache.put(String.format("%s%d", port, 4), new byteview(Integer.toString(port))); // {80011:8001 ... }
+        geecache.mainCache.put(String.format("%s%d", port, 5), new byteview(Integer.toString(port)));
+        geecache.mainCache.put(String.format("%s%d", port, 6), new byteview(Integer.toString(port)));
+        */
         gee.registerPeers(peers);
         System.out.println("structure.geecache is running at"+addr);
         try {
@@ -36,6 +39,7 @@ public class TestPeers {
             e.printStackTrace();
         }
     }
+
     public void startAPIServer(String apiAddr, geecache gee){
         try {
             HttpServer server4 = HttpServer.create(new InetSocketAddress(9999), 0);
@@ -49,7 +53,7 @@ public class TestPeers {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         TestPeers test = new TestPeers();
         Scanner in =new Scanner(System.in);
         String argStr=in.nextLine();
@@ -58,9 +62,9 @@ public class TestPeers {
 
         int port = Integer.parseInt(ll[0]);
         int api = Integer.parseInt(ll[1]);
-        String apiAddr = "";
+        String apiAddr;
         apiAddr = "http://localhost:9999";
-        HashMap<Integer,String> addrMap = new HashMap<Integer,String>();
+        HashMap<Integer,String> addrMap = new HashMap<>();
         addrMap.put(8001,"http://localhost:8001");
         addrMap.put(8002,"http://localhost:8002");
         addrMap.put(8003,"http://localhost:8003");

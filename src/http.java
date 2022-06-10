@@ -1,7 +1,9 @@
 import byteview.byteview;
+import com.alibaba.fastjson2.JSONObject;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import consistenthash.consistenthash;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class http implements HttpHandler, IPeerPicker{
     String self;
     String basePath;
     Lock mu;
-    consistenthash.consistenthash peers;//新增成员变量 peers，类型是一致性哈希算法的 Map，用来根据具体的 key 选择节点
+    consistenthash peers;//新增成员变量 peers，类型是一致性哈希算法的 Map，用来根据具体的 key 选择节点
     HashMap<String, HttpGetter> httpGetters;//新增成员变量 httpGetters，映射远程节点与对应的 httpGetter。每一个远程节点对应一个 httpGetter，
                                             // 因为 httpGetter 与远程节点的地址 baseURL 有关
     public static String defaultBasePath = "/_jcache/";
@@ -72,7 +74,7 @@ public class http implements HttpHandler, IPeerPicker{
         byteview ret = group.get(key);
         if (ret == null) {
             httpExchange.sendResponseHeaders(404, 0);
-            String sRet = new String(key +" not found in " + groupName);
+            String sRet = key + " not found in " + groupName;
             os.write(sRet.getBytes(StandardCharsets.UTF_8));
             this.log("%s not found in %s", key, groupName);
             os.close();
@@ -104,7 +106,7 @@ public class http implements HttpHandler, IPeerPicker{
                                             //并为每一个节点创建了一个 HTTP 客户端 httpGetter
         this.mu.lock();
 
-        this.peers = new consistenthash.consistenthash(defaultReplicas, null);
+        this.peers = new consistenthash(defaultReplicas, null);
         this.peers.add(peers);
         this.httpGetters = new HashMap<>();
         for (String peer : peers) {
@@ -149,13 +151,46 @@ class HttpGetter implements IPeerGetter {//首先创建具体的 HTTP 客户端�
             while ((line = in.readLine()) != null) {
                     result += line;
             }
-            byteview byt = new byteview(result);
-            return byt;
+            return new byteview(result);
 
         } catch (Exception e) {
                 System.out.println("Error happened when getting from peer");
                 e.printStackTrace();
                 return null;
             }
+    }
+
+    public JSONObject getStatus() {
+        System.out.println("调用HttpGetter的baseURL:"+this.baseURL);
+        String requestURL = String.format("%s%s",baseURL,"/api/status" );
+        System.out.println("requestURL:"+requestURL);
+        String result = "";
+        String line;
+        try {
+            URL url = new URL(requestURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.connect();
+            int responseCode = con.getResponseCode();//从 HTTP 响应消息获取状态码。如果无法从响应中识别任何代码（即响应不是有效的 HTTP），则返回 -1。
+            String responseMsg = con.getResponseMessage();//获取与来自服务器的响应代码一起返回的 HTTP 响应消息（如果有）
+            System.out.println(responseMsg);
+            if (responseCode != 200) {
+                System.out.println("Request failed");
+                return null;
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+            JSONObject json = new JSONObject();
+            json = JSONObject.parseObject(result);
+            return json;
+
+        } catch (Exception e) {
+            System.out.println("Error happened when getting from peer");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,10 +1,12 @@
 package singleflight;
 
+import byteview.byteview;
+
 import java.util.concurrent.CountDownLatch;
 
 public class TestSingleFlight {
     public static void main(String[] args) {
-        Process callManage = new Process();
+        singleflight callManage = new singleflight();
         int count = 10;
         CountDownLatch cld = new CountDownLatch(count);
         for (int i = 0; i < count; i++) {
@@ -14,12 +16,12 @@ public class TestSingleFlight {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                byte[] value = callManage.run("key", () -> {
+                byteview value = callManage.run("key", (String key) -> {
                     System.out.println("func");
-                    String bar="bar";
-                    return null;
+                    return new byteview("bar");
                 });
-                System.out.println(new String(value));
+
+                System.out.println(new String(value.bytes()));
             }).start();
             cld.countDown();
         }
