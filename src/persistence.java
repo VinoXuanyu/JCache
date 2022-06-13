@@ -7,7 +7,7 @@ import java.util.Set;
 import lru.DoubleLinkedList.*;
 import byteview.byteview;
 import lru.Node;
-
+//do a try
 public class persistence {
     static String base="backups";
     persistence(){}
@@ -53,6 +53,14 @@ public class persistence {
         } catch (IOException e) {
         }
 
+
+    }
+    String load_address() throws FileNotFoundException {
+        JsonParser parse=new JsonParser();
+        JsonObject json=(JsonObject) parse.parse(new FileReader("config.json"));
+        String s= String.valueOf(json.get("backupFilesDir"));
+        s=s.substring(1,s.length()-1);
+        return s;
 
     }
 }

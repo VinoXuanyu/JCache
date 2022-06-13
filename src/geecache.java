@@ -3,6 +3,7 @@ import singleflight.singleflight;
 import getters.IGetter;
 import utils.welcome;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -46,11 +47,13 @@ public class geecache {
         return null;
     }
 
-    public static geecache newGroup(String name) throws FileNotFoundException {
+    public static geecache newGroup(String name) throws IOException {
         // TODO(persistence)：
         //  1. 调用Recover 恢复备份
         //  2. 开启备份线程 e.g. backupWorker = new Thread(geecache.backup); backupWorker.run();
-        File file = new File("backups");
+        persistence p =new persistence();
+        File file = new File(p.load_address());
+        file.mkdir();
         int flag=0;
         String[] fileNameLists = file.list();
         for(int i=0;i<fileNameLists.length;i++){
@@ -63,7 +66,6 @@ public class geecache {
         }
         geecache group;
         if(flag==1){
-            persistence p =new persistence();
             group=p.recover(name);
         }else{
             group=new geecache(name);
