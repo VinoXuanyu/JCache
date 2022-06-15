@@ -15,7 +15,7 @@ import java.util.concurrent.locks.Lock;
 public class TestPeers {
 
     public geecache gee;
-    public geecache creatGroup() throws FileNotFoundException {
+    public geecache creatGroup() throws IOException {
         gee = geecache.newGroup("scores");
         return gee;
     }
@@ -53,7 +53,7 @@ public class TestPeers {
 
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         TestPeers test = new TestPeers();
         Scanner in =new Scanner(System.in);
         String argStr=in.nextLine();
