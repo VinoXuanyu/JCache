@@ -120,19 +120,16 @@ public class geecache implements Supplier {
     }
 
     public byteview load(String key) {//使用 PickPeer() 方法选择节点，若非本机节点，则调用 getFromPeer() 从远程获取。若是本机节点或失败，则回退到 getLocally()
-        System.out.println("在查找load peers key是：" + key);
         if (this.peers != null) {
             IPeerGetter getter = this.peers.pickPeer(key);
             if (getter == null) {
-                System.out.println("哈希为自身" + this.getLocally(key));
                 return this.getLocally(key);
             }
-            System.out.println("查找load peers结果为：" + getter.toString());
+
 
             return this.getFromPeer(getter, key);
         } else {
             byteview ret = this.getLocally(key);
-            System.out.println("查找load peers为空" + ret);
             return ret; // -> getter
         }
     }
