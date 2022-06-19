@@ -12,10 +12,6 @@ public class TestPersistence {
             gee.populateCache("a", a);
             gee.populateCache("b", b);
             gee.populateCache("c", c);
-            geecache ge = geecache.newGroup("Test2");
-            ge.populateCache("a", a);
-            ge.populateCache("b", b);
-            ge.populateCache("c", c);
         }catch (Exception  e){
             e.printStackTrace();
         }

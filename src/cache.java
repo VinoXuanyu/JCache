@@ -27,7 +27,7 @@ public class cache {
         }
         this.mu.lock();
         this.lru.put(key, data);
-        this.mu.lock();
+        this.mu.unlock();
     }
 
     public long remainVolume(){

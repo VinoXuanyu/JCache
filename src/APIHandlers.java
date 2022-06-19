@@ -55,7 +55,7 @@ class nodesHandler implements HttpHandler {
     }
 
     public void log(String format, Object... args) {
-        System.out.printf("Server[%s] ", this.self);
+        System.out.printf("[APIServer] [%s] ", this.self);
         System.out.printf(format, args);
         System.out.println();
     }
@@ -75,7 +75,7 @@ class statusHandler implements HttpHandler {
     }
 
     public void log(String format, Object... args) {
-        System.out.printf("Server[%s] ", this.self);
+        System.out.printf("[APIServer] [%s] ", this.self);
         System.out.printf(format, args);
         System.out.println();
     }
@@ -139,7 +139,7 @@ class getHandler implements HttpHandler {
     }
 
     public void log(String format, Object... args) {
-        System.out.printf("Server[%s] ", this.self);
+        System.out.printf("[APIServer] [%s] ", this.self);
         System.out.printf(format, args);
         System.out.println();
     }
@@ -163,14 +163,14 @@ class getHandler implements HttpHandler {
             os.close();
             return;
         }
-        this.log(" params %s", params);
+      //  this.log(" params %s", params);
         String[] params1 = params.split("&");
         String[] params2 = params1[0].split("=");
         String groupName = params2[1];
         String[] params3 = params1[1].split("=");
         String key = params3[1];
-        this.log(" group %s", groupName);
-        this.log(" key %s", key);
+        this.log("group: %s , key: %s", groupName, key);
+        //this.log("key: %s", key);
         geecache group = geecache.getGroup(groupName);
 
         if (group == null) {
@@ -184,7 +184,7 @@ class getHandler implements HttpHandler {
             return;
         }
 
-        httpExchange.sendResponseHeaders(200, 0);
+        //httpExchange.sendResponseHeaders(200, 0);
         byteview ret = group.get(key);
         if (ret == null) {
             this.log("%s not found in %s", key, groupName);
@@ -196,14 +196,15 @@ class getHandler implements HttpHandler {
             os.close();
             return;
         }
-        this.log("%s found in %s", key, groupName);
         String s = new String(ret.bytes());
-        this.log("%s value is %s", key, s);
+        this.log("%s found in %s , %s value is %s", key, groupName, key, s);
+
+        //this.log("%s value is %s", key, s);
 
 
         JSONObject Json = new JSONObject();
         Json.put("code", 200);
-        Json.put("data", ret);
+        Json.put("data", ret.string());
         Json.put("status", "success");
         httpExchange.sendResponseHeaders(200, 0);
         os.write(Json.toJSONString().getBytes(StandardCharsets.UTF_8));
@@ -224,7 +225,7 @@ class overviewHandler implements HttpHandler {
     }
 
     public void log(String format, Object... args) {
-        System.out.printf("Server[%s] ", this.self);
+        System.out.printf("[APIServer] [%s] ", this.self);
         System.out.printf(format, args);
         System.out.println();
     }

@@ -13,12 +13,12 @@ public class APIServer {
             geecache.nodes.add(s);
         }
         cache.registerPeers(peers);
-        System.out.println("structure.geecache is running at"+"localhost:"+port);
+        //System.out.println("structure.geecache is running at"+"localhost:"+port);
         try {
             server.createContext("/_jcache", peers);
             server.setExecutor(null);
             server.start();
-            System.out.println("Cache is running at localhost:"+port);
+           // System.out.println("Cache is running at localhost:"+port);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,7 +36,7 @@ public class APIServer {
             mainServer.createContext("/api/nodes", new nodesHandler(cache,"localhost:" + port));
             mainServer.createContext("/api/overview",new overviewHandler(cache,"localhost:" + port));
             mainServer.setExecutor(null);
-            System.out.println("Main Server is running at localhost:" + port);
+            System.out.println("[MainServer] running at localhost: " + port);
             startCacheServer(port, cache, mainServer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,7 +50,7 @@ public class APIServer {
             subServer.createContext("/api/status", new statusHandler(cache,"localhost:"+port));
             subServer.createContext("/api/get",new getHandler(cache,"localhost:"+port));
             subServer.setExecutor(null);
-            System.out.println("Sub Server is running at "+addr);
+            System.out.println("[SubServer] is running at "+addr);
             startCacheServer(Integer.parseInt(port), cache, subServer);
         } catch (IOException e) {
             e.printStackTrace();
